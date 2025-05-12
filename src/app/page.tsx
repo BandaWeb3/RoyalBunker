@@ -101,7 +101,7 @@ export default function Home() {
               disabled={isSendingToken}
               className="px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-lg shadow-lg transition-transform transform hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              {isSendingToken ? "Enviando 1 $RB..." : "Enviar 1 $RB"}
+              {isSendingToken ? "Enviando 1 $RB..." : "Envía 1 $RB a nounsmx.eth ¿estás seguro que te conviene?"}
             </button>
           </div>
         )}
@@ -156,10 +156,10 @@ function Header() {
             rel="noopener noreferrer"
             className="text-blue-400 hover:text-blue-300 underline"
           >
-            FAQ
+            mexi.wtf
           </a>
         </code>{" "}
-        si tienes alguna duda.
+        y búscame si tienes alguna duda.
       </p>
     </header>
   );
