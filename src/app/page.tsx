@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { ConnectButton } from "thirdweb/react";
 import { defineChain } from "thirdweb/chains";
-import thirdwebIcon from "@public/thirdweb.svg";
+import royalbunkerIcon from "@public/royalbunker.svg";
 import { client } from "./client";
 
 // Define la cadena Mantle que quieres usar
@@ -37,7 +37,7 @@ function Header() {
   return (
     <header className="flex flex-col items-center mb-20 md:mb-20">
       <Image
-        src={thirdwebIcon}
+        src={royalbunkerIcon}
         alt=""
         className="size-[200px] md:size-[200px]"
         style={{
