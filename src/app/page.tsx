@@ -2,8 +2,12 @@
 
 import Image from "next/image";
 import { ConnectButton } from "thirdweb/react";
+import { defineChain } from "thirdweb/chains";
 import thirdwebIcon from "@public/thirdweb.svg";
 import { client } from "./client";
+
+// Define la cadena Mantle que quieres usar
+const mantleMainnet = defineChain(5000); // <--- DEFINE MANTLE MAINNET
 
 export default function Home() {
   return (
@@ -14,9 +18,11 @@ export default function Home() {
         <div className="flex justify-center mb-20">
           <ConnectButton
             client={client}
+            chain={mantleMainnet}
+            connectButton={{ label: "Conéctate" }}
             appMetadata={{
-              name: "Example App",
-              url: "https://example.com",
+              name: "Royal Bunker App",
+              url: "https://mexi.wtf",
             }}
           />
         </div>
@@ -33,24 +39,31 @@ function Header() {
       <Image
         src={thirdwebIcon}
         alt=""
-        className="size-[150px] md:size-[150px]"
+        className="size-[200px] md:size-[200px]"
         style={{
-          filter: "drop-shadow(0px 0px 24px #a726a9a8)",
+          filter: "drop-shadow(0px 0px 24px #f28500a8)",
         }}
       />
 
       <h1 className="text-2xl md:text-6xl font-semibold md:font-bold tracking-tighter mb-6 text-zinc-100">
-        thirdweb SDK
+        BandaWeb3
         <span className="text-zinc-300 inline-block mx-1"> + </span>
-        <span className="inline-block -skew-x-6 text-blue-500"> Next.js </span>
+        <span className="inline-block -skew-x-6 text-blue-500">Royal Bunker</span>
       </h1>
 
       <p className="text-zinc-300 text-base">
-        Read the{" "}
+        Visita{" "}
         <code className="bg-zinc-800 text-zinc-300 px-2 rounded py-1 text-sm mx-1">
-          README.md
-        </code>{" "}
-        file to get started.
+          <a 
+            href="https://mexi.wtf"
+            target="_blank" // Abre el enlace en una nueva pestaña
+            rel="noopener noreferrer" // Buena práctica de seguridad para target="_blank"
+            className="text-blue-400 hover:text-blue-300 underline" // Estilo para el enlace
+            >FAQ
+          </a>
+        </code>
+        {" "}
+        si tienes alguna duda.
       </p>
     </header>
   );
@@ -60,21 +73,21 @@ function ThirdwebResources() {
   return (
     <div className="grid gap-4 lg:grid-cols-3 justify-center">
       <ArticleCard
-        title="thirdweb SDK Docs"
-        href="https://portal.thirdweb.com/typescript/v5"
-        description="thirdweb TypeScript SDK documentation"
+        title="BandaWeb3"
+        href="https://x.com/BandaWeb3"
+        description="Visita el X de BandaWeb3"
       />
 
       <ArticleCard
-        title="Components and Hooks"
-        href="https://portal.thirdweb.com/typescript/v5/react"
-        description="Learn about the thirdweb React components and hooks in thirdweb SDK"
+        title="Meximalist"
+        href="https://x.com/meximalist"
+        description="Visita el X de Mexi"
       />
 
       <ArticleCard
-        title="thirdweb Dashboard"
-        href="https://thirdweb.com/dashboard"
-        description="Deploy, configure, and manage your smart contracts from the dashboard."
+        title="Historia del Royal Bunker"
+        href="https://x.com/meximalist/status/1906089459835371803"
+        description="Conoce más sobre el Royal Bunker"
       />
     </div>
   );

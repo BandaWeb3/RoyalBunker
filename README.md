@@ -1,59 +1,40 @@
+# 🃏 Royal Bunker
 
-![tw-banner](https://github.com/thirdweb-example/next-starter/assets/57885104/20c8ce3b-4e55-4f10-ae03-2fe4743a5ee8)
+**Royal Bunker** is a Web3-powered tournament poker platform that brings together real-life events and blockchain technology. Founded in Monterrey in 2007 and now reborn, Royal Bunker uses crypto tokens to manage buy-ins, lotes (chip batches), and player logistics — both digitally and IRL.
 
-# thirdweb-next-starter
+---
 
-Starter template to build an onchain react native app with [thirdweb](https://thirdweb.com/) and [next](https://nextjs.org/).
+## 🎯 What It Does
 
-## Installation
+- Users register using **email (via Privy)** — no wallet required up front.
+- They can **pay the tournament entry fee in Mantle or Arbitrum**, using ETH, USDC, or native tokens.
+- After payment is verified (via TX hash or link), they receive **RB tokens** on **Mantle**, representing “lotes” (chip batches).
+- During the IRL tournament, players **transfer their RB tokens** to a tournament-specific wallet via a button in the app. The cashier then hands out the corresponding chips.
 
-Install the template using [thirdweb create](https://portal.thirdweb.com/cli/create)
+---
 
-```bash
-  npx thirdweb create app --next
-```
+## 🔧 Tech Stack
 
-## Environment Variables
+- **Node** (Frontend)
+- **Thirdweb SDK** (email-based wallet onboarding, contract interactions + token transfers)
+- **Mantle & Arbitrum** (L2 blockchains)
+- **RB Token** – custom ERC20 token deployed on Mantle to represent chip batches
 
-To run this project, you will need to add the following environment variables to your .env file:
+---
 
-`CLIENT_ID`
+## 🌐 Networks
 
-To learn how to create a client ID, refer to the [client documentation](https://portal.thirdweb.com/typescript/v5/client). 
+| Network         | Chain ID | Tokens Accepted       |
+|----------------|----------|------------------------|
+| Mantle         | `5000`   | MNT, ETH, USDC         |
+| Arbitrum One   | `42161`  | ARB, ETH, USDC         |
 
-## Run locally
+---
 
-Install dependencies
+## 💰 Token Model
 
-```bash
-yarn
-```
-
-Start development server
-
-```bash
-yarn dev
-```
-
-Create a production build
-
-```bash
-yarn build
-```
-
-Preview the production build
-
-```bash
-yarn start
-```
-
-## Resources
-
-- [Documentation](https://portal.thirdweb.com/typescript/v5)
-- [Templates](https://thirdweb.com/templates)
-- [YouTube](https://www.youtube.com/c/thirdweb)
-- [Blog](https://blog.thirdweb.com)
-
-## Need help?
-
-For help or feedback, please [visit our support site](https://thirdweb.com/support)
+- **1 lote = 333 MXN**
+- **Entry = 3 lotes = 999 MXN**
+- RB tokens are only issued **on Mantle**
+- Users receive RB tokens equivalent to their payment after verification
+- These tokens can be used to redeem physical chips at the cashier

@@ -6,9 +6,9 @@ import { ThirdwebProvider } from "thirdweb/react";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "thirdweb SDK + Next starter",
+  title: "Royal Bunker Tourney dApp",
   description:
-    "Starter template for using thirdweb SDK with Next.js App router",
+    "dApp para administración de lotes de fichas en torneos del Royal Bunker",
 };
 
 export default function RootLayout({
