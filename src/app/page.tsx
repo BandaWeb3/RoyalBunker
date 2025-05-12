@@ -1,20 +1,57 @@
 "use client";
 
 import Image from "next/image";
-import { ConnectButton } from "thirdweb/react";
-import { defineChain } from "thirdweb/chains";
+import { ConnectButton, useActiveAccount, useReadContract } from "thirdweb/react";
+import { defineChain, getContract, toEther } from "thirdweb";
 import royalbunkerIcon from "@public/royalbunker.svg";
 import { client } from "./client";
 
 // Define la cadena Mantle que quieres usar
-const mantleMainnet = defineChain(5000); // <--- DEFINE MANTLE MAINNET
+const mantleMainnet = defineChain(5000);
+
+// Dirección del token
+const TOKEN_ADDRESS = "0x670984EC30A4C1b03B9f31199F8cbA233817506C";
 
 export default function Home() {
+  // Obtener la cuenta activa (wallet conectada)
+  const account = useActiveAccount();
+
+  // Definir el contrato del token
+  const contract = getContract({
+    client,
+    chain: mantleMainnet,
+    address: TOKEN_ADDRESS,
+  });
+
+  // Consultar el saldo del token para la dirección conectada
+  const { data: balance, isLoading } = useReadContract({
+    contract,
+    method: "function balanceOf(address) view returns (uint256)",
+    params: account ? [account.address] as const : undefined, // Use `undefined` instead of an empty array
+    enabled: !!account, // Solo ejecutar si hay una cuenta conectada
+  });
+
+  // Formatear el saldo (convertir de wei a unidades con 18 decimales)
+  const formattedBalance = balance ? toEther(balance) : "0";
+
   return (
     <main className="p-4 pb-10 min-h-[100vh] flex items-center justify-center container max-w-screen-lg mx-auto">
       <div className="py-20">
         <Header />
-
+        {/* Mostrar el saldo del token */}
+        <div className="text-center mb-20">
+          {account ? (
+            isLoading ? (
+              <p className="text-zinc-300">Cargando saldo...</p>
+            ) : (
+              <p className="text-zinc-100 text-lg">
+                Saldo: {formattedBalance} $RB Tokens
+              </p>
+            )
+          ) : (
+            <p className="text-zinc-300">Conecta tu wallet para ver el saldo $RB</p>
+          )}
+        </div>
         <div className="flex justify-center mb-20">
           <ConnectButton
             client={client}
@@ -26,7 +63,7 @@ export default function Home() {
             }}
           />
         </div>
-
+        
         <ThirdwebResources />
       </div>
     </main>
@@ -54,15 +91,15 @@ function Header() {
       <p className="text-zinc-300 text-base">
         Visita{" "}
         <code className="bg-zinc-800 text-zinc-300 px-2 rounded py-1 text-sm mx-1">
-          <a 
+          <a
             href="https://mexi.wtf"
-            target="_blank" // Abre el enlace en una nueva pestaña
-            rel="noopener noreferrer" // Buena práctica de seguridad para target="_blank"
-            className="text-blue-400 hover:text-blue-300 underline" // Estilo para el enlace
-            >FAQ
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-400 hover:text-blue-300 underline"
+          >
+            FAQ
           </a>
-        </code>
-        {" "}
+        </code>{" "}
         si tienes alguna duda.
       </p>
     </header>
