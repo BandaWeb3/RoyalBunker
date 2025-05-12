@@ -30,18 +30,6 @@ export default function Home() {
     address: account?.address,
     tokenAddress: TOKEN_ADDRESS,
   });
-
-  // Consultar el saldo del token para la dirección conectada
-  // const { data: balance, isLoading } = useReadContract({
-  //    contract,
-  //    method: "function balanceOf(address) view returns (uint256)",
-  //    params: [
-  //      account?.address ??
-  //        "0x0000000000000000000000000000000000000000",
-  //    ] as const,
-  //    enabled: !!account,   // ensures request only fires when there is an account
-  //    });
-    
   // Formatear el saldo (convertir de wei a unidades con 18 decimales)
   const formattedBalance = balance ? toEther(balance.value) : "0";
 
