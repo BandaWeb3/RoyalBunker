@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { ConnectButton, useActiveAccount, useReadContract } from "thirdweb/react";
+import { ConnectButton, useActiveAccount, useWalletBalance } from "thirdweb/react";
 import { defineChain, getContract, toEther } from "thirdweb";
 import royalbunkerIcon from "@public/royalbunker.svg";
 import { client } from "./client";
@@ -23,18 +23,27 @@ export default function Home() {
     address: TOKEN_ADDRESS,
   });
 
+  // Only run the balance hook if account is present
+  const { data: balance, isLoading } = useWalletBalance({
+    client,
+    chain: mantleMainnet,
+    address: account?.address,
+    tokenAddress: TOKEN_ADDRESS,
+  });
+
   // Consultar el saldo del token para la dirección conectada
-  const { data: balance, isLoading } = useReadContract({
-      contract,
-      method: "function balanceOf(address) view returns (uint256)",
-      params: account 
-        ? ([account.address] as const)
-        : undefined,
-      enabled: !!account,   // ensures request only fires when there is an account
-      });
+  // const { data: balance, isLoading } = useReadContract({
+  //    contract,
+  //    method: "function balanceOf(address) view returns (uint256)",
+  //    params: [
+  //      account?.address ??
+  //        "0x0000000000000000000000000000000000000000",
+  //    ] as const,
+  //    enabled: !!account,   // ensures request only fires when there is an account
+  //    });
     
   // Formatear el saldo (convertir de wei a unidades con 18 decimales)
-  const formattedBalance = balance ? toEther(balance) : "0";
+  const formattedBalance = balance ? toEther(balance.value) : "0";
 
   return (
     <main className="p-4 pb-10 min-h-[100vh] flex items-center justify-center container max-w-screen-lg mx-auto">
