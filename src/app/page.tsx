@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link"; // Importa el componente Link de Next.js
 import {
   ConnectButton,
   useActiveAccount,
@@ -124,6 +125,22 @@ export default function Home() {
         </div>
         
         <ThirdwebResources />
+
+{/* Sección de enlaces a las páginas Base y Solana */}
+        <div className="flex justify-center gap-4 mt-10">
+          <Link
+            href="/base"
+            className="px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg transition-colors"
+          >
+            Ir a Base
+          </Link>
+          <Link
+            href="/solana"
+            className="px-6 py-2 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg transition-colors"
+          >
+            Ir a Solana
+          </Link>
+        </div>
       </div>
     </main>
   );
