@@ -1,0 +1,22 @@
+{
+  "name": "Royal Bunker Token",
+  "symbol": "RB",
+  "description": "The official token of the Royal Bunker, used in the BandaWeb3 multichain dApp.",
+  "image": "https://example.com/rb-logo.png",
+  "external_url": "https://mexi.wtf",
+  "attributes": [
+    {
+      "trait_type": "Category",
+      "value": "Utility Token"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://example.com/rb-logo.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}
