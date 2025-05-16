@@ -16,7 +16,7 @@ import {
 } from "thirdweb";
 // Ya no necesitas importar de "thirdweb/utils" para parseUnits
 
-import royalbunkerIcon from "@public/royalbunker.svg";
+import royalbunkerIcon from "@public/rbbase.svg";
 import { client } from "./client";
 
 // Define la cadena Base que quieres usar

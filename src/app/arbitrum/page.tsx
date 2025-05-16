@@ -16,7 +16,7 @@ import {
 } from "thirdweb";
 // Ya no necesitas importar de "thirdweb/utils" para parseUnits
 
-import royalbunkerIcon from "@public/royalbunker.svg";
+import royalbunkerIcon from "@public/rbarbitrum.svg";
 import { client } from "./client";
 
 // Define la cadena Arbitrum que quieres usar
@@ -159,7 +159,7 @@ function Header() {
             mexi.wtf
           </a>
         </code>{" "}
-        y búscame si tienes alguna duda. ARBITRUM
+        y búscame si tienes alguna duda.
       </p>
     </header>
   );
