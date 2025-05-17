@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link"; // Importa el componente Link de Next.js
+import Link from "next/link";
 import {
   ConnectButton,
   useActiveAccount,
@@ -11,63 +11,19 @@ import {
 import {
   defineChain,
   getContract,
-  toEther,        // Para formatear el saldo (de wei a ether)
+  toEther,
   prepareContractCall,
-  toWei,          // Para convertir la cantidad a enviar (de ether a wei) <--- CAMBIO AQUÍ
+  toWei,
 } from "thirdweb";
-// Ya no necesitas importar de "thirdweb/utils" para parseUnits
-
-import type { WidgetConfig } from "@bandohq/widget";
-import { BandoWidget } from "@bandohq/widget";
-
-import royalbunkerIcon from "@public/royalbunker.svg";
+import caserioIcon from "@public/caserio1.svg";
 import { client } from "./client";
+import QRCode from "qrcode.react"; // Default import
 
 // Define la cadena Mantle que quieres usar
 const mantleMainnet = defineChain(5000);
 
 // Dirección del token
 const TOKEN_ADDRESS = "0x670984EC30A4C1b03B9f31199F8cbA233817506C";
-
-export function Widget() {
-  const config = {
-    appearance: "light",
-    theme: {
-      container: {
-        boxShadow: "0px 8px 32px rgba(0, 0, 0, 0.08)",
-        borderRadius: "16px",
-      },
-    },
-  } as Partial<WidgetConfig>;
-
-  return (
-    <div>
-      {/* Renders the widget only after JavaScript is active on the client side, displaying the fallback during the server-side render */}
-      <ClientOnly fallback={<WidgetSkeleton config={config} />}>
-        <BandoWidget config={config} integrator="nextjs-example" />
-      </ClientOnly>
-    </div>
-  );
-}export function Widget() {
-  const config = {
-    appearance: "light",
-    theme: {
-      container: {
-        boxShadow: "0px 8px 32px rgba(0, 0, 0, 0.08)",
-        borderRadius: "16px",
-      },
-    },
-  } as Partial<WidgetConfig>;
-
-  return (
-    <div>
-      {/* Renders the widget only after JavaScript is active on the client side, displaying the fallback during the server-side render */}
-      <ClientOnly fallback={<WidgetSkeleton config={config} />}>
-        <BandoWidget config={config} integrator="nextjs-example" />
-      </ClientOnly>
-    </div>
-  );
-}
 
 export default function Home() {
   const account = useActiveAccount();
@@ -104,10 +60,7 @@ export default function Home() {
       const tx = prepareContractCall({
         contract,
         method: "function transfer(address to, uint256 value) returns (bool)",
-        params: [
-          recipientAddress,
-          toWei(amountToSend) // <--- USA toWei AQUÍ
-        ],
+        params: [recipientAddress, toWei(amountToSend)],
       });
       await sendTokenTransaction(tx);
       alert("¡Transacción de envío iniciada! Revisa tu billetera para aprobar.");
@@ -129,13 +82,44 @@ export default function Home() {
               <p className="text-zinc-300">Cargando saldo $RB...</p>
             ) : (
               <p className="text-zinc-100 text-lg">
-                Saldo: {parseFloat(formattedBalance).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 })} $RB {/* Mejor formato para el saldo */}
+                Saldo: {parseFloat(formattedBalance).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 })} $RB
               </p>
             )
           ) : (
             <p className="text-zinc-300">Conecta tu wallet para ver el saldo $RB</p>
           )}
         </div>
+
+        {/* Mostrar el QR y la dirección de la cuenta */}
+        {account && (
+          <div className="flex flex-col items-center mb-10">
+            <p className="text-zinc-100 text-lg mb-4">Tu dirección:</p>
+            <p className="text-zinc-300 text-sm mb-4 break-all">{account.address}</p>
+            {QRCode ? (
+              <div className="bg-white p-2 rounded-lg">
+                <QRCode
+                  value={account.address}
+                  size={200}
+                  bgColor="#ffffff"
+                  fgColor="#000000"
+                  level="Q"
+                  includeMargin={false}
+                />
+              </div>
+            ) : (
+              <p className="text-red-500">Error: No se pudo cargar el componente QR</p>
+            )}
+            <p className="text-zinc-400 text-sm mt-4">
+              Escanea este QR para compartir tu dirección y recibir tokens.
+            </p>
+            <button
+               onClick={() => navigator.clipboard.writeText(account.address)}
+               className="text-blue-400 hover:text-blue-300 underline text-sm"
+            >
+               Copiar dirección
+            </button>
+          </div>
+        )}
 
         {/* Botón para enviar tokens */}
         {account && (
@@ -151,7 +135,7 @@ export default function Home() {
         )}
         {transactionError && (
           <p className="text-center text-red-500 -mt-16 mb-4">
-            Error: {transactionError.message.slice(0,100)}...
+            Error: {transactionError.message.slice(0, 100)}...
           </p>
         )}
 
@@ -159,44 +143,27 @@ export default function Home() {
           <ConnectButton
             client={client}
             chain={mantleMainnet}
-            connectButton={{ label: "Conéctate" }}
+            connectButton={{ label: "Crea tu cuenta/Login" }}
             appMetadata={{
-              name: "Royal Bunker App",
+              name: "Royal Bunker Caserio App",
               url: "https://mexi.wtf",
             }}
           />
         </div>
-        
-        <ThirdwebResources />
 
-{/* Sección de enlaces a las páginas Base y Solana */}
-        <div className="flex justify-center gap-4 mt-10">
-          <Link
-            href="/base"
-            className="px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg transition-colors"
-          >
-            Ir a Base
-          </Link>
-          <Link
-            href="/solana"
-            className="px-6 py-2 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg transition-colors"
-          >
-            Ir a Solana
-          </Link>
-        </div>
+        <ThirdwebResources />
       </div>
     </main>
   );
 }
 
-// ... (Tus componentes Header, ThirdwebResources, ArticleCard sin cambios)
-// (Asegúrate de que estos componentes estén definidos aquí o importados si están en otros archivos)
+// Componentes Header, ThirdwebResources, ArticleCard sin cambios
 function Header() {
   return (
     <header className="flex flex-col items-center mb-20 md:mb-20">
       <Image
-        src={royalbunkerIcon}
-        alt="Royal Bunker Icon"
+        src={caserioIcon}
+        alt="Caserio Icon"
         className="size-[200px] md:size-[200px]"
         style={{
           filter: "drop-shadow(0px 0px 24px #f28500a8)",
@@ -205,7 +172,7 @@ function Header() {
       <h1 className="text-2xl md:text-6xl font-semibold md:font-bold tracking-tighter mb-6 text-zinc-100">
         BandaWeb3
         <span className="text-zinc-300 inline-block mx-1"> + </span>
-        <span className="inline-block -skew-x-6 text-blue-500">Royal Bunker</span>
+        <span className="inline-block -skew-x-6 text-blue-500">Caserio</span>
       </h1>
       <p className="text-zinc-300 text-base">
         Visita{" "}
@@ -219,7 +186,7 @@ function Header() {
             mexi.wtf
           </a>
         </code>{" "}
-        y búscame si tienes alguna duda. SOLANA
+        y búscame si tienes alguna duda.
       </p>
     </header>
   );
@@ -239,9 +206,9 @@ function ThirdwebResources() {
         description="Visita el X de Mexi"
       />
       <ArticleCard
-        title="Historia del Royal Bunker"
-        href="https://x.com/meximalist/status/1906089459835371803"
-        description="Conoce más sobre el Royal Bunker"
+        title="Historia de Caserio"
+        href="https://www.cervezacaserio.mx/"
+        description="Conoce más sobre Cerveza Caserio"
       />
     </div>
   );
