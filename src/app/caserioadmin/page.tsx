@@ -74,7 +74,8 @@ export default function Home() {
   useEffect(() => {
     if (isScanning && videoRef.current) {
       checkCameraAvailability().then(() => {
-        qrScannerRef.current = new QrScanner(videoRef.current, (result) => {
+        if (!videoRef.current) return; // Additional safety check
+        qrScannerRef.current = new QrScanner(videoRef.current as HTMLVideoElement, (result) => {
           if (isAddress(result.data)) {
             setScannedAddress(result.data);
             setIsScanning(false);
