@@ -17,8 +17,6 @@ import {
 } from "thirdweb";
 // Ya no necesitas importar de "thirdweb/utils" para parseUnits
 
-import type { WidgetConfig } from "@bandohq/widget";
-import { BandoWidget } from "@bandohq/widget";
 
 import royalbunkerIcon from "@public/royalbunker.svg";
 import { client } from "./client";
@@ -29,45 +27,6 @@ const mantleMainnet = defineChain(5000);
 // Dirección del token
 const TOKEN_ADDRESS = "0x670984EC30A4C1b03B9f31199F8cbA233817506C";
 
-export function Widget() {
-  const config = {
-    appearance: "light",
-    theme: {
-      container: {
-        boxShadow: "0px 8px 32px rgba(0, 0, 0, 0.08)",
-        borderRadius: "16px",
-      },
-    },
-  } as Partial<WidgetConfig>;
-
-  return (
-    <div>
-      {/* Renders the widget only after JavaScript is active on the client side, displaying the fallback during the server-side render */}
-      <ClientOnly fallback={<WidgetSkeleton config={config} />}>
-        <BandoWidget config={config} integrator="nextjs-example" />
-      </ClientOnly>
-    </div>
-  );
-}export function Widget() {
-  const config = {
-    appearance: "light",
-    theme: {
-      container: {
-        boxShadow: "0px 8px 32px rgba(0, 0, 0, 0.08)",
-        borderRadius: "16px",
-      },
-    },
-  } as Partial<WidgetConfig>;
-
-  return (
-    <div>
-      {/* Renders the widget only after JavaScript is active on the client side, displaying the fallback during the server-side render */}
-      <ClientOnly fallback={<WidgetSkeleton config={config} />}>
-        <BandoWidget config={config} integrator="nextjs-example" />
-      </ClientOnly>
-    </div>
-  );
-}
 
 export default function Home() {
   const account = useActiveAccount();
