@@ -23,7 +23,7 @@ import QrScanner from "qr-scanner";
 import { useState, useEffect, useRef } from "react";
 import { inAppWallet, createWallet } from "thirdweb/wallets";
 // Define la cadena arbitrum que quieres usar
-const arbitrumMainnet = defineChain(42161);
+const arbitrumMainnet = defineChain(421614);
 const wallets = [
   inAppWallet({
     auth: {
