@@ -19,7 +19,7 @@ import { inAppWallet, createWallet } from "thirdweb/wallets";
 import { client, RBContract } from "./client";
 
 // Define la cadena Mantle que quieres usar
-const mantleMainnet = defineChain(11155111);
+const mantleMainnet = defineChain(8453);
 const wallets = [
   inAppWallet({
     auth: {
