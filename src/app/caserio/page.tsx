@@ -23,7 +23,7 @@ import QrScanner from "qr-scanner";
 import { useState, useEffect, useRef } from "react";
 import { inAppWallet, createWallet } from "thirdweb/wallets";
 // Define la cadena Mantle que quieres usar
-const mantleMainnet = defineChain(8453);
+const mantleMainnet = defineChain(84532);
 const wallets = [
   inAppWallet({
     auth: {
