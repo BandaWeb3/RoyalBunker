@@ -16,7 +16,7 @@ import {
   toWei,
   isAddress,
 } from "thirdweb";
-import caserioIcon from "@public/caserio1.svg";
+import PizzaDAOIcon from "@public/PizzaDao.svg";
 import { client } from "./client";
 import QRCode from "qrcode.react";
 import QrScanner from "qr-scanner";
@@ -272,7 +272,7 @@ export default function Home() {
               sponsorGas: true }}
             connectButton={{ label: "Crea tu cuenta/Login" }}
             appMetadata={{
-              name: "Royal Bunker Caserio App",
+              name: "Royal Bunker PizzaDAO Base App",
               url: "https://mexi.wtf",
             }}
           />
@@ -289,17 +289,17 @@ function Header() {
   return (
     <header className="flex flex-col items-center mb-20 md:mb-20">
       <Image
-        src={caserioIcon}
-        alt="Caserio Icon"
-        className="size-[200px] md:size-[200px]"
+        src={PizzaDAOIcon}
+        alt="Pizza DAO Icon"
+        className="size-[350px] md:size-[350px]"
         style={{
-          filter: "drop-shadow(0px 0px 24px #f28500a8)",
+          filter: "drop-shadow(1px 1px 24x #f28500a8)",
         }}
       />
       <h1 className="text-2xl md:text-6xl font-semibold md:font-bold tracking-tighter mb-6 text-zinc-100">
         BandaWeb3
         <span className="text-zinc-300 inline-block mx-1"> + </span>
-        <span className="inline-block -skew-x-6 text-blue-500">Caserio</span>
+        <span className="inline-block -skew-x-6 text-blue-500">Pizza DAO</span>
       </h1>
       <p className="text-zinc-300 text-base">
         Visita{" "}
@@ -333,9 +333,9 @@ function ThirdwebResources() {
         description="Visita el X de Mexi"
       />
       <ArticleCard
-        title="Historia de Caserio"
-        href="https://www.cervezacaserio.mx/"
-        description="Conoce más sobre Cerveza Caserio"
+        title="Historia de Pizza DAO"
+        href="https://globalpizza.party/"
+        description="Conoce más sobre Pizza DAO"
       />
     </div>
   );
