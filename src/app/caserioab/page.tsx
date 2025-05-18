@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
+import Link from "next/link"; 
 import {
   ConnectButton,
   useActiveAccount,
@@ -14,14 +14,18 @@ import {
   toEther,
   prepareContractCall,
   toWei,
-  isAddress,
 } from "thirdweb";
+import {
+  TransactionButton
+} from "thirdweb/react";
 import caserioIcon from "@public/caserio1.svg";
-import { client } from "./client";
-import QRCode from "qrcode.react";
-import QrScanner from "qr-scanner";
-import { useState, useEffect, useRef } from "react";
+import { 
+  client,
+  tokenAddress, // Dirección del  contrato del token $RB
+} from "./client";
 import { inAppWallet, createWallet } from "thirdweb/wallets";
+import QRCode from "qrcode.react"; // Default import
+
 // Define la cadena Mantle que quieres usar
 const mantleMainnet = defineChain(11155111);
 const wallets = [
@@ -47,22 +51,20 @@ const wallets = [
   createWallet("io.zerion.wallet"),
   createWallet("io.metamask"),
 ];
-// Dirección del token
-const TOKEN_ADDRESS = "0x670984EC30A4C1b03B9f31199F8cbA233817506C";
 
 export default function Home() {
   const account = useActiveAccount();
   const contract = getContract({
     client,
     chain: mantleMainnet,
-    address: TOKEN_ADDRESS,
+    address: tokenAddress,
   });
 
   const { data: balance, isLoading: isLoadingBalance } = useWalletBalance({
     client,
     chain: mantleMainnet,
     address: account?.address,
-    tokenAddress: TOKEN_ADDRESS,
+    tokenAddress: tokenAddress,
   });
   const formattedBalance = balance ? toEther(balance.value) : "0";
 
@@ -72,72 +74,12 @@ export default function Home() {
     error: transactionError,
   } = useSendTransaction();
 
-  const [scannedAddress, setScannedAddress] = useState<string | null>(null);
-  const [isScanning, setIsScanning] = useState(false);
-  const [cameraError, setCameraError] = useState<string | null>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const qrScannerRef = useRef<QrScanner | null>(null);
+  const recipientAddress = "0x5C3E2c131Cb10E4f4c9DF581725Bee57443D8523";
+  const amountToSend = "1"; // 1 $RB token
 
-  // Check for available cameras
-  const checkCameraAvailability = async () => {
-    try {
-      const devices = await navigator.mediaDevices.enumerateDevices();
-      const hasCamera = devices.some((device) => device.kind === "videoinput");
-      if (!hasCamera) {
-        throw new Error("No se encontraron cámaras en este dispositivo.");
-      }
-    } catch (err) {
-      setCameraError(err instanceof Error ? err.message : "Error al verificar cámaras.");
-      setIsScanning(false);
-    }
-  };
-
-  // Initialize and clean up QR scanner
-  useEffect(() => {
-    if (isScanning && videoRef.current) {
-      checkCameraAvailability().then(() => {
-        if (!videoRef.current) return; // Additional safety check
-        qrScannerRef.current = new QrScanner(videoRef.current as HTMLVideoElement, (result) => {
-          if (isAddress(result.data)) {
-            setScannedAddress(result.data);
-            setIsScanning(false);
-          } else {
-            alert("La dirección escaneada no es válida.");
-          }
-        }, {
-          highlightScanRegion: true,
-          highlightCodeOutline: true,
-          preferredCamera: "environment",
-        });
-
-        qrScannerRef.current.start().catch((err) => {
-          console.error("Error iniciando el escáner:", err);
-          setCameraError(
-            err.message.includes("Camera not found")
-              ? "No se encontró una cámara. Conecta una cámara o usa un dispositivo con cámara."
-              : "Error al iniciar el escáner. Asegúrate de permitir el acceso a la cámara."
-          );
-          setIsScanning(false);
-        });
-      });
-    }
-
-    return () => {
-      if (qrScannerRef.current) {
-        qrScannerRef.current.stop();
-        qrScannerRef.current.destroy();
-        qrScannerRef.current = null;
-      }
-    };
-  }, [isScanning]);
-
-  const handleSendToken = async (amount: string) => {
+  const handleSendToken = async () => {
     if (!account || !contract || !client) {
       alert("Por favor, conecta tu billetera y asegúrate de que el cliente esté inicializado.");
-      return;
-    }
-    if (!scannedAddress || !isAddress(scannedAddress)) {
-      alert("Por favor, escanea una dirección válida antes de enviar tokens.");
       return;
     }
 
@@ -145,13 +87,13 @@ export default function Home() {
       const tx = prepareContractCall({
         contract,
         method: "function transfer(address to, uint256 value) returns (bool)",
-        params: [scannedAddress, toWei(amount)],
+        params: [recipientAddress, toWei(amountToSend)],
       });
       await sendTokenTransaction(tx);
-      alert(`¡Transacción de ${amount} $RB iniciada! Revisa tu billetera para aprobar.`);
+      alert("¡Transacción de envío iniciada! Revisa tu billetera para aprobar.");
     } catch (err) {
       console.error("Error al preparar o enviar la transacción de token:", err);
-      alert(`Error al enviar ${amount} $RB: ${err instanceof Error ? err.message : "Error desconocido"}`);
+      alert(`Error al enviar el token: ${err instanceof Error ? err.message : "Error desconocido"}`);
     }
   };
 
@@ -198,63 +140,24 @@ export default function Home() {
               Escanea este QR para compartir tu dirección y recibir tokens.
             </p>
             <button
-              onClick={() => navigator.clipboard.writeText(account.address)}
-              className="text-blue-400 hover:text-blue-300 underline text-sm mt-2"
+               onClick={() => navigator.clipboard.writeText(account.address)}
+               className="text-blue-400 hover:text-blue-300 underline text-sm"
             >
-              Copiar dirección
+               Copiar dirección
             </button>
           </div>
         )}
 
-        {/* Botón para escanear QR */}
+        {/* Botón para enviar tokens */}
         {account && (
-          <div className="flex flex-col items-center mb-10">
+          <div className="flex justify-center mb-20">
             <button
-              onClick={() => {
-                setCameraError(null);
-                setIsScanning(!isScanning);
-              }}
-              className="px-8 py-3 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-lg shadow-lg transition-transform transform hover:scale-105 mb-4"
+              onClick={handleSendToken}
+              disabled={isSendingToken}
+              className="px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-lg shadow-lg transition-transform transform hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              {isScanning ? "Cerrar escáner" : "Escanear dirección"}
+              {isSendingToken ? "Enviando 1 $RB..." : "Envía 1 $RB a nounsmx.eth ¿estás seguro que te conviene?"}
             </button>
-            {isScanning && (
-              <div className="w-[300px] h-[300px] border border-zinc-800 rounded-lg overflow-hidden">
-                <video ref={videoRef} className="w-full h-full" />
-              </div>
-            )}
-            {cameraError && (
-              <p className="text-red-500 text-sm mt-4">{cameraError}</p>
-            )}
-            {scannedAddress && (
-              <div className="flex flex-col items-center mt-4">
-                <p className="text-zinc-100 text-sm">
-                  Dirección escaneada: <span className="break-all">{scannedAddress}</span>
-                </p>
-                <button
-                  onClick={() => setScannedAddress(null)}
-                  className="text-blue-400 hover:text-blue-300 underline text-sm mt-2"
-                >
-                  Borrar dirección escaneada
-                </button>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Botones para enviar diferentes cantidades de tokens */}
-        {account && (
-          <div className="flex flex-wrap justify-center gap-4 mb-20">
-            {["0.1", "0.2", "0.3", "0.5", "1"].map((amount) => (
-              <button
-                key={amount}
-                onClick={() => handleSendToken(amount)}
-                disabled={isSendingToken || !scannedAddress}
-                className="px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-lg shadow-lg transition-transform transform hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed"
-              >
-                {isSendingToken ? `Enviando ${amount} $RB...` : `Envía ${amount} $RB`}
-              </button>
-            ))}
           </div>
         )}
         {transactionError && (
@@ -266,7 +169,7 @@ export default function Home() {
         <div className="flex justify-center mb-20">
           <ConnectButton
             client={client}
-              wallets={wallets}
+            wallets={wallets}
             accountAbstraction={{ 
               chain: mantleMainnet, 
               sponsorGas: true }}
@@ -276,15 +179,28 @@ export default function Home() {
               url: "https://mexi.wtf",
             }}
           />
-        </div>
 
+
+          <TransactionButton
+            transaction={() =>
+              prepareContractCall({
+                contract,
+                method: "function transfer(address to, uint256 value) returns (bool)",
+                params: [recipientAddress, toWei(amountToSend)],
+              })
+            }
+          >
+            Transfer 1 $RB
+          </TransactionButton>
+
+        </div>
         <ThirdwebResources />
       </div>
     </main>
   );
 }
 
-// Componentes Header, ThirdwebResources, ArticleCard
+// Componentes Header, ThirdwebResources, ArticleCard sin cambios
 function Header() {
   return (
     <header className="flex flex-col items-center mb-20 md:mb-20">
@@ -348,7 +264,7 @@ function ArticleCard(props: {
 }) {
   return (
     <a
-      href={`${props.href}?utm_source=next-template`}
+      href={props.href + "?utm_source=next-template"}
       target="_blank"
       rel="noopener noreferrer"
       className="flex flex-col border border-zinc-800 p-4 rounded-lg hover:bg-zinc-900 transition-colors hover:border-zinc-700"
